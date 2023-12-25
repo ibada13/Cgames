@@ -16,6 +16,13 @@ typedef struct nodei
     int data;
     struct nodei *next;
 } nodei;
+
+
+typedef struct param{
+    struct nodep **phead;
+    struct nodei **ihead;
+
+} param;
 void spc_print(nodep *phead, nodei* ihead,int* number){
     // if(*number = 1 ){
         system("start cmd.exe");
@@ -31,6 +38,15 @@ void spc_print(nodep *phead, nodei* ihead,int* number){
         }
     }
 }
+    void print_equ(nodep* phead ){
+        nodep* p = phead ;
+        system("cls");
+        printf("|");
+        while(p!=NULL){
+            printf(" %s |", p->data);
+            p = p->next;
+        }
+    } 
 void freeall(nodep* phead , nodei* ihead ){
     nodep *fi = phead;
     nodei *se = ihead;
@@ -81,26 +97,30 @@ void creatist(nodep **phead  , nodei** ihead)
     *phead = p;
     *ihead = i;
  }
-DWORD WINAPI CR(LPVOID phead , LPVOID ihead){
-    nodep **p = (nodep **)phead ;
-    nodep **i = (nodep **)ihead ;
+DWORD WINAPI CR(param* head){
+    // nodep **p = (nodep **)phead ;
+    // nodep **i = (nodep **)ihead ;
 
     int turn = 1;
     while(1){
-        creatist(p,i);
-        spc_print(*p,*i,&turn);
+        creatist(head->phead,head->ihead);
+        print_equ(*(head->phead));
         Sleep(3000);
     }
     Sleep(6000);
     printf("this is fromCR function");
 }
-DWORD WINAPI RE(LPVOID phead, LPVOID ihead){
+DWORD WINAPI RE(param* head){
 
     system("start cmd.exe");
     int ans  ;
     while(1){
         scanf("%i", &ans);
-        boolean mark = checkans_sup((nodep**)phead , (nodei**)ihead , ans);
+        boolean mark = checkans_sup(head->phead, head->ihead, ans);
+        if(mark){
+            print_equ(*(head->phead));
+        }
+
     }
 }
 
@@ -133,6 +153,8 @@ boolean checkans_sup(nodep** phead,nodei** ihead , int ans){
             sup = true;
         }
         else{
+            ir = ir->next;
+            pr = pr->next;
             i = i->next;
             p = p->next;
         }
@@ -146,21 +168,23 @@ boolean checkans_sup(nodep** phead,nodei** ihead , int ans){
 int main()
 {
 
-    // HANDLE theardsHa[2];
-    // theardsHa[0] = CreateThread(NULL, 0,CR, NULL, 0, NULL);
-    // theardsHa[1] = CreateThread(NULL, 0, RE, NULL, 0, NULL);
-
-    // if (theardsHa[0] == NULL || theardsHa[1] == NULL)
-    // {
-    //     fprintf(stderr, "404 err hapend ... \n");
-    // }
-    // WaitForMultipleObjects(2, theardsHa, TRUE, INFINITE);
-    int k = 0;
-    nodep *phead = NULL;
     nodei *ihead = NULL;
-    creatist(&phead, &ihead);
-    creatist(&phead, &ihead);
-    creatist(&phead, &ihead);
+    nodep *phead = NULL;
+    param *pa = (param *)malloc(sizeof(param));
+    pa->phead = &phead;
+    pa->ihead = &ihead;
+
+    HANDLE theardsHa[2];
+    theardsHa[0] = CreateThread(NULL, 0,CR, pa, 0, NULL);
+    theardsHa[1] = CreateThread(NULL, 0, RE, pa, 0, NULL);
+
+    if (theardsHa[0] == NULL || theardsHa[1] == NULL)
+    {
+        fprintf(stderr, "404 err hapend ... \n");
+    }
+    WaitForMultipleObjects(2, theardsHa, TRUE, INFINITE);
+    int k = 0;
+
 
 
     spc_print(phead , ihead , &k);
