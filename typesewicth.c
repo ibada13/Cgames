@@ -61,13 +61,6 @@ void readchar(elm *head, elm **start)
                 printf("\033[0m"); 
             }
         }
-        // else
-        // {
-        //     system("cls");
-        //     spc_print(head, NULL);
-        //     spc_print(head, *start);
-
-        // }
     }
 }
     int calc_words(char t[] ){
@@ -101,12 +94,8 @@ int main()
     time_t endgame = time(NULL);
     int timer = endgame - startgame;
     int l = calc_words(x);
-    // printf("\n %i", l);
-    // printf("\n %ld", startgame);
-    // printf("\n %ld", endgame);
-    // printf("\n %ld", timer);
+
     float ts = (float)timer / 60;
-    // printf("\n%.3f\n",ts );
 
      ts = (float)l /ts ;
     
