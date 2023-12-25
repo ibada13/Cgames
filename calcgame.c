@@ -3,6 +3,7 @@
 #include <windows.h>
 #include <string.h>
 #include <time.h>
+#include<stdbool.h>
 typedef struct nodep
 {
     char *data;
@@ -15,8 +16,11 @@ typedef struct nodei
     int data;
     struct nodep *next;
 } nodei;
-void spc_print(nodep *head)
-{
+void spc_print(nodep *head ,int* number){
+    if(*number = 1 ){
+        system("start cmd.exe");
+        *number++;
+    }
     if (head != NULL)
     {
 
@@ -36,6 +40,7 @@ void spc_print(nodep *head)
             i = p->next;
         }
     }
+
 }
 void freeall(nodep* head ){
     nodep *fi = head;
@@ -89,25 +94,42 @@ void creatist(nodep **head)
     i->next = *head;
     *head = p;
 }
-// DWORD WINAPI WR()
-// {
+DWORD WINAPI CR(LPVOID head){
+    nodep **p = (nodep **)head ;
+    int turn = 1;
+    while(1){
+        creatist(p);
+        spc_print(*p,&turn);
+        Sleep(3000);
+    }
+    Sleep(6000);
+    printf("this is fromCR function");
+}
+DWORD WINAPI RE(){
+    system("start cmd.exe");
+    int ans  ;
+    while(1){
+        scanf("%i", &ans);
+
+    }
+}
+
+boolean checkans_sup(nodep** head , int ans){
+    nodep* p  =*head ;
+    nodei* i = (*head)->next ; 
+    while(){
+        
+    } 
 
 
-//     Sleep(6000);
-//     printf("this is from wr function");
-// }
-// DWORD WINAPI RE()
-// {
-//     Sleep(3000);
-//     printf("this is from re function");
-//     system("cls");
-// }
+
+}
 
 int main()
 {
 
     // HANDLE theardsHa[2];
-    // theardsHa[0] = CreateThread(NULL, 0, WR, NULL, 0, NULL);
+    // theardsHa[0] = CreateThread(NULL, 0,CR, NULL, 0, NULL);
     // theardsHa[1] = CreateThread(NULL, 0, RE, NULL, 0, NULL);
 
     // if (theardsHa[0] == NULL || theardsHa[1] == NULL)
@@ -119,6 +141,6 @@ int main()
      nodep *head = NULL;
      creatist(&head);
 
-     spc_print(head);
+    //  spc_print(head);
      freeall(head);
 }
