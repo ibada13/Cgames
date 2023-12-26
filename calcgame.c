@@ -47,12 +47,14 @@ void print_equ(nodep *phead)
     printf("|");
     while (p != NULL)
     {
+
+        if( p->next ==NULL){
+        printf(" %s |\n >>>>>>>  ", p->data);
+        }
+        else{
         printf(" %s |", p->data);
+        }
         p = p->next;
-        // if(p->next ==NULL){
-        // printf(" %s |\n", p->data);
-        // p = p->next;
-        // }
     }
 }
 void freeall(nodep *phead, nodei *ihead)
@@ -110,6 +112,8 @@ void creatist(nodep **phead, nodei **ihead)
 boolean checkans_sup(nodep **phead, nodei **ihead, int ans)
 {
     boolean sup = false;
+    if(*phead !=NULL){
+
     nodep *p = *phead;
     nodei *i = *ihead;
     if (i->data == ans)
@@ -147,8 +151,9 @@ boolean checkans_sup(nodep **phead, nodei **ihead, int ans)
         }
     }
 
-    return sup;
 }
+    return sup;
+    }
 DWORD WINAPI CR(LPVOID thead)
 {
     param *head = thead;
@@ -159,10 +164,9 @@ DWORD WINAPI CR(LPVOID thead)
     {
         creatist(p, i);
         print_equ(*p);
-        Sleep(3000);
+        Sleep(2000);
     }
-    Sleep(6000);
-    printf("this is fromCR function");
+
 }
 DWORD WINAPI RE(LPVOID thead)
 {
@@ -173,7 +177,7 @@ DWORD WINAPI RE(LPVOID thead)
     int ans;
     while (1)
     {
-        scanf("%i", &ans);
+        scanf("\n %i", &ans);
         boolean mark = checkans_sup(p, i, ans);
         if (mark)
         {
