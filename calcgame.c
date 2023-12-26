@@ -3,7 +3,7 @@
 #include <windows.h>
 #include <string.h>
 #include <time.h>
-#include<stdbool.h>
+#include <stdbool.h>
 typedef struct nodep
 {
     char *data;
@@ -17,40 +17,50 @@ typedef struct nodei
     struct nodei *next;
 } nodei;
 
-
-typedef struct param{
+typedef struct param
+{
     struct nodep **phead;
     struct nodei **ihead;
 
 } param;
-void spc_print(nodep *phead, nodei* ihead,int* number){
+void spc_print(nodep *phead, nodei *ihead, int *number)
+{
     // if(*number = 1 ){
-        system("start cmd.exe");
+    system("start cmd.exe");
 
     if (phead != NULL)
     {
         nodei *i = ihead;
         nodep *p = phead;
-        while(p!=NULL){
+        while (p != NULL)
+        {
             printf("the eqution is : %s , and the solution is : %i \n", p->data, i->data);
             i = i->next;
             p = p->next;
         }
     }
 }
-    void print_equ(nodep* phead ){
-        nodep* p = phead ;
-        system("cls");
-        printf("|");
-        while(p!=NULL){
-            printf(" %s |", p->data);
-            p = p->next;
-        }
-    } 
-void freeall(nodep* phead , nodei* ihead ){
+void print_equ(nodep *phead)
+{
+    nodep *p = phead;
+    system("cls");
+    printf("|");
+    while (p != NULL)
+    {
+        printf(" %s |", p->data);
+        p = p->next;
+        // if(p->next ==NULL){
+        // printf(" %s |\n", p->data);
+        // p = p->next;
+        // }
+    }
+}
+void freeall(nodep *phead, nodei *ihead)
+{
     nodep *fi = phead;
     nodei *se = ihead;
-    while(fi != NULL){
+    while (fi != NULL)
+    {
         nodep *p = fi;
         nodei *i = se;
         fi = fi->next;
@@ -59,12 +69,12 @@ void freeall(nodep* phead , nodei* ihead ){
         free(i);
     }
 }
-void creatist(nodep **phead  , nodei** ihead)
+void creatist(nodep **phead, nodei **ihead)
 {
     char equa[10];
-    srand(time(0) + rand()%100);
+    srand(time(0) + rand() % 100);
     int x = rand() % 10;
-    int y = rand() % 10 +1;
+    int y = rand() % 10 + 1;
     int op = rand() % 4;
     int res = 0;
     if (op == 0)
@@ -96,54 +106,30 @@ void creatist(nodep **phead  , nodei** ihead)
     i->next = *ihead;
     *phead = p;
     *ihead = i;
- }
-DWORD WINAPI CR(param* head){
-    // nodep **p = (nodep **)phead ;
-    // nodep **i = (nodep **)ihead ;
-
-    int turn = 1;
-    while(1){
-        creatist(head->phead,head->ihead);
-        print_equ(*(head->phead));
-        Sleep(3000);
-    }
-    Sleep(6000);
-    printf("this is fromCR function");
 }
-DWORD WINAPI RE(param* head){
-
-    system("start cmd.exe");
-    int ans  ;
-    while(1){
-        scanf("%i", &ans);
-        boolean mark = checkans_sup(head->phead, head->ihead, ans);
-        if(mark){
-            print_equ(*(head->phead));
-        }
-
-    }
-}
-
-boolean checkans_sup(nodep** phead,nodei** ihead , int ans){
+boolean checkans_sup(nodep **phead, nodei **ihead, int ans)
+{
     boolean sup = false;
-    nodep* p  =*phead ;
-    nodei* i = *ihead ;
-    if(i->data == ans ){
+    nodep *p = *phead;
+    nodei *i = *ihead;
+    if (i->data == ans)
+    {
         free(i);
-        *ihead = (*ihead)->next ;
+        *ihead = (*ihead)->next;
         free(p);
-        *phead = (*phead)->next ;
+        *phead = (*phead)->next;
         sup = true;
-    } 
-     p  =(*phead)->next ;
-     
-     i = (*ihead)->next ;
-     nodep* pr  =*phead ;
-    nodei* ir = *ihead ;
-    
-    
-    while(i!=NULL ){
-        if(i->data == ans){
+    }
+    p = (*phead)->next;
+
+    i = (*ihead)->next;
+    nodep *pr = *phead;
+    nodei *ir = *ihead;
+
+    while (i != NULL)
+    {
+        if (i->data == ans)
+        {
             ir->next = i->next;
             pr->next = p->next;
             free(i);
@@ -152,17 +138,48 @@ boolean checkans_sup(nodep** phead,nodei** ihead , int ans){
             p = pr->next;
             sup = true;
         }
-        else{
+        else
+        {
             ir = ir->next;
             pr = pr->next;
             i = i->next;
             p = p->next;
         }
-
-
     }
 
     return sup;
+}
+DWORD WINAPI CR(LPVOID thead)
+{
+    param *head = thead;
+    nodep **p = head->phead ;
+    nodep **i = head->ihead ;
+
+    while (1)
+    {
+        creatist(p, i);
+        print_equ(*p);
+        Sleep(3000);
+    }
+    Sleep(6000);
+    printf("this is fromCR function");
+}
+DWORD WINAPI RE(LPVOID thead)
+{
+    param *head = thead;
+    nodei **i = head->ihead;
+    nodep **p = head->phead;
+   
+    int ans;
+    while (1)
+    {
+        scanf("%i", &ans);
+        boolean mark = checkans_sup(p, i, ans);
+        if (mark)
+        {
+            print_equ(*p);
+        }
+    }
 }
 
 int main()
@@ -175,7 +192,7 @@ int main()
     pa->ihead = &ihead;
 
     HANDLE theardsHa[2];
-    theardsHa[0] = CreateThread(NULL, 0,CR, pa, 0, NULL);
+    theardsHa[0] = CreateThread(NULL, 0, CR, pa, 0, NULL);
     theardsHa[1] = CreateThread(NULL, 0, RE, pa, 0, NULL);
 
     if (theardsHa[0] == NULL || theardsHa[1] == NULL)
@@ -185,8 +202,6 @@ int main()
     WaitForMultipleObjects(2, theardsHa, TRUE, INFINITE);
     int k = 0;
 
-
-
-    spc_print(phead , ihead , &k);
+    spc_print(phead, ihead, &k);
     freeall(phead, ihead);
 }
