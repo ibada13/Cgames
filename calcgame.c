@@ -23,6 +23,7 @@ typedef struct param
 {
     struct nodep **phead;
     struct nodei **ihead;
+    int score;
 
 } param;
 param *pa;
@@ -43,7 +44,7 @@ void spc_print(nodep *phead, nodei *ihead, int *number)
         }
     }
 }
-void print_equ(nodep *phead)
+void print_equ(nodep *phead , int score)
 {
     nodep *p = phead;
     system("cls");
@@ -53,6 +54,7 @@ void print_equ(nodep *phead)
 
         if( p->next ==NULL){
         printf(" %s |\n >>>>>>>  ", p->data);
+        printf(" your score %i : \n >>>>>>> ", score);
         // printf("hii022201 \n");
 
         }
@@ -126,21 +128,31 @@ boolean checkans_sup(nodep **phead, nodei **ihead, int ans)
 {
     boolean sup = false;
     if(*phead !=NULL){
-
-    nodep *p = *phead;
-    nodei *i = *ihead;
-    if (i->data == ans)
-    {
-        printf("hii5 \n");
-
-        free(i);
-        *ihead = (*ihead)->next;
+            nodei *i ;
+            nodep *p ;
+        while(*ihead!=NULL&& (*ihead)->data == ans ){
+            i = *ihead;
+            p = *phead;
+            *ihead = (*ihead)->next;
+            *phead = (*phead)->next;
+            free(i);
             free(p->data);
+            free(p);
+            sup = true;
+        }
 
-        free(p);
-        *phead = (*phead)->next;
-        sup = true;
-    }
+    // if (i->data == ans)
+    // {
+    //     printf("hii5 \n");
+
+    //     free(i);
+    //     *ihead = (*ihead)->next;
+    //         free(p->data);
+
+    //     free(p);
+    //     *phead = (*phead)->next;
+    //     sup = true;
+    // }
     if(*phead !=NULL ){
 
     p = (*phead)->next;
@@ -167,7 +179,7 @@ boolean checkans_sup(nodep **phead, nodei **ihead, int ans)
         else
         {
         printf("hii4 \n");
-        Sleep(3000);
+        // Sleep(3000);
         ir = ir->next;
         pr = pr->next;
         i = i->next;
@@ -190,9 +202,9 @@ DWORD WINAPI CR(LPVOID thead)
     WaitForSingleObject(ghMutex, INFINITE);
 
         creatist(p, i);
-        print_equ(*p);
+        print_equ(*p,pa->score);
         ReleaseMutex(ghMutex);
-        Sleep(2000);
+        Sleep(3000-pa->score%10 );
     }
 
 }
@@ -213,9 +225,10 @@ DWORD WINAPI RE(LPVOID thead)
         printf("hii1 \n");
         if (mark)
         {
-        printf("hii2 \n");
-WaitForSingleObject(ghMutex, INFINITE);
-            print_equ(*p);
+        
+        pa->score = pa->score+ 200;
+        WaitForSingleObject(ghMutex, INFINITE);
+        print_equ(*p,pa->score);
         ReleaseMutex(ghMutex);
 
         }
@@ -229,6 +242,8 @@ int main()
     pa = (param *)malloc(sizeof(param));
     pa->phead = &phead;
     pa->ihead = &ihead;
+   
+    pa->score = 0; 
 
     HANDLE theardsHa[2];
       ghMutex = CreateMutex( 
