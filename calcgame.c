@@ -53,14 +53,12 @@ void print_equ(nodep *phead , int score)
     {
 
         if( p->next ==NULL){
-        printf(" %s |\n >>>>>>>  ", p->data);
-        printf(" your score %i : \n >>>>>>> ", score);
-        // printf("hii022201 \n");
+        printf(" %s |\n", p->data);
+        printf("[+] your score : [%i] \n>>>>>>> ", score);
 
         }
         else{
         printf(" %s |", p->data);
-        // printf("hii001 \n");
 
         }
         p = p->next;
@@ -165,7 +163,6 @@ boolean checkans_sup(nodep **phead, nodei **ihead, int ans)
     {
         if (i->data == ans)
         {
-        printf("hii3 \n");
         
             ir->next = i->next;
             pr->next = p->next;
@@ -178,8 +175,6 @@ boolean checkans_sup(nodep **phead, nodei **ihead, int ans)
         }
         else
         {
-        printf("hii4 \n");
-        // Sleep(3000);
         ir = ir->next;
         pr = pr->next;
         i = i->next;
@@ -199,12 +194,14 @@ DWORD WINAPI CR(LPVOID thead)
 
     while (1)
     {
-    WaitForSingleObject(ghMutex, INFINITE);
+    // WaitForSingleObject(ghMutex, INFINITE);
 
         creatist(p, i);
         print_equ(*p,pa->score);
-        ReleaseMutex(ghMutex);
-        Sleep(3000-pa->score%10 );
+        // ReleaseMutex(ghMutex)
+        
+        Sleep(3000-(pa->score/10) );
+        printf("\n%i,%i", 3000 - (pa->score / 10),pa->score);
     }
 
 }
@@ -218,18 +215,17 @@ DWORD WINAPI RE(LPVOID thead)
     while (1)
     {
         scanf("\n %i", &ans);
-    WaitForSingleObject(ghMutex, INFINITE);
+    // WaitForSingleObject(ghMutex, INFINITE);
 
         boolean mark = checkans_sup(p, i, ans);
-        ReleaseMutex(ghMutex);
-        printf("hii1 \n");
+        // ReleaseMutex(ghMutex);
         if (mark)
         {
         
         pa->score = pa->score+ 200;
-        WaitForSingleObject(ghMutex, INFINITE);
+        // WaitForSingleObject(ghMutex, INFINITE);
         print_equ(*p,pa->score);
-        ReleaseMutex(ghMutex);
+        // ReleaseMutex(ghMutex);
 
         }
     }
